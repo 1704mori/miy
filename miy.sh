@@ -1,3 +1,17 @@
+# Original solution sourced from:
+#       https://unix.stackexchange.com/questions/146570/arrow-key-enter-menu
+#
+# Updated to do the following:
+#   - Display index with each option
+#   - Choose options 1-9 with numeric input
+#   - Clear the menu and reset the cursor when an option is selected
+#
+#  Arguments:
+#    array of options
+#
+#  Return value:
+#    selected index (0 for opt1, 1 for opt2 ...)
+
 #!/usr/bin/bash
 
 # Define ANSI color codes
