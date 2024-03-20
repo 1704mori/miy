@@ -122,6 +122,8 @@ function select_option {
       install_golang
     elif [[ "${options[$i]}" == "NVM" ]]; then
       install_nvm
+    elif [[ "${options[$i]}" == "Docker" ]]; then
+      install_docker
     fi
   done
 }
@@ -153,8 +155,31 @@ install_nvm() {
   echo "NVM installation is complete."
 }
 
-# Define your options
-options=("Go" "NVM")
+install_docker() {
+  echo "Starting Docker installation process"
+  sudo apt-get update -y
+  sudo apt-get install -y ca-certificates curl
+  
+  sudo install -m 0755 -d /etc/apt/keyrings
+  sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+  sudo chmod a+r /etc/apt/keyrings/docker.asc
 
-# Call the select_option function with your options
+  echo \
+    "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+    $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+    sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+  sudo apt-get update -y
+  sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
+
+  sudo usermod -aG docker ${SUDO_USER:-$USER}
+
+  echo "Attempting to verify the Docker installation..."
+  docker --version
+
+  echo "Docker installation is complete."
+}
+
+options=("Go" "NVM" "Docker")
+
 select_option "${options[@]}"
